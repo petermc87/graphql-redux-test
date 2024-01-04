@@ -48,3 +48,9 @@ export const auth = createSlice({
     },
   },
 });
+
+// To use these functions elsewhere, you have to use auth.actions
+export const { logIn, logOut } = auth.actions;
+
+// Export the reducer
+export default auth.reducer;
