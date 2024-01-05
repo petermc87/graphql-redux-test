@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.7.1",
     "@reduxjs/toolkit": "^2.0.1",
     "add": "^2.0.6",
     "next": "14.0.4",

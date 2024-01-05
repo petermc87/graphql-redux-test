@@ -9,3 +9,19 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Author {
+  id             String  @id @default(uuid())
+  name           String  @unique
+  numberOfNovels Int
+  novels         Novel[]
+}
+
+model Novel {
+  id           String @id @default(uuid())
+  title        String
+  introduction String
+  publisher    String
+  author       Author @relation(fields: [authorId], references: [id])
+  authorId     String
+}
