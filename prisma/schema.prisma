@@ -20,6 +20,7 @@ model Author {
 model Novel {
   id           String @id @default(uuid())
   title        String
+  image        String
   introduction String
   publisher    String
   author       Author @relation(fields: [authorId], references: [id])

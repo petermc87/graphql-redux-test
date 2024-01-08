@@ -16,6 +16,7 @@
     "add": "^2.0.6",
     "graphql": "^16.8.1",
     "next": "14.0.4",
+    "ra-data-graphql": "^4.16.5",
     "react": "^18",
     "react-bootstrap": "^2.9.2",
     "react-dom": "^18",
