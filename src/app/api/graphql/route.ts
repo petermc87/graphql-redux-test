@@ -2,15 +2,15 @@ import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { PrismaClient } from "@prisma/client";
 import gql from "graphql-tag";
-
-// We have to declare the type as the types in the prisma
-// client.
+import prisma from "../../../../prisma/db";
+// // We have to declare the type as the types in the prisma
+// // client.
 export type Context = {
   prisma: PrismaClient;
 };
 // NOTE: We declare the data models then the specific queries (GET requests).
 // We will get all the novels.
-// Next, we will provide mutations (POST and PUT requests)
+// Next, we will provide mutations (POST, DELETE and PUT requests)
 // This will only consist of the current novel in question.
 //
 // DEFINITION: typeDefs is where the Schema and REST type
@@ -34,32 +34,74 @@ const typeDefs = gql`
   }
 
   type Query {
+    author(id: ID!): Author
     authors: [Author]
   }
 `;
 
 // DEFINITION: Resolvers are CRUD functions.
 const resolvers = {
+  // Args will be the arguements passed into the query above.
+  // Ex.: if it was written above as:
+  //  type Query {
+  //    novel(id: ID) : Novel
+  //    novel: [Novel]
+  //  }
+  // args will can be used to access the id: ID above.
   Query: {
-    // Args will be the arguements passed into the query above.
-    // Ex.: if it was written above as:
-    //  type Query {
-    //    novel(id: ID) : Novel
-    //    novel: [Novel]
-    //  }
-    // args will can be used to access the id: ID above.
+    // NOTE: Query matching 'authors' in typeDefs above. This gets ALL novels.
     authors: async (parent: any, args: any, context: Context) => {
-      // Api call to the backend.
-      return await context.prisma.author.findMany();
+      try {
+        const authors = await context.prisma.author.findMany();
+        // Returns an empty array if 'null'.
+        return authors || [];
+      } catch (error) {
+        console.error("Error fetching authors", error);
+        throw new Error("Unable to fetch authors");
+      }
+    },
+    // NOTE: Query matching 'author'. This gers ONE novel.
+    author: async (parent: any, args: any, context: Context) => {
+      try {
+        const author = await context.prisma.author.findUnique({
+          where: {
+            id: args.id,
+          },
+        });
+        return author;
+      } catch (error) {
+        console.error("Error fetching author", error);
+        throw new Error("Unable to fetch author");
+      }
+    },
+  },
+
+  // We query author again to get the novels contained within it.
+  Author: {
+    novels: async (parent: any, args: any, context: Context) => {
+      try {
+        // NOTE: To get novels created by a specific author, you have
+        // to match the authorId in Novel with the author object passed in.
+        // IMPORTANT: This object is the 'parent' which is passed from either the 'authors' or 'author' above,
+        // (hence parent.id below), depending on which one you're querying.
+        const novels = await context.prisma.novel.findMany({
+          where: {
+            authorId: parent.id,
+          },
+        });
+        return novels || [];
+      } catch (error) {
+        console.error("Error fetching novels", error);
+        throw new Error("Unable to fetch novels.");
+      }
     },
   },
 };
 
-const server = new ApolloServer<Context>({
-  resolvers,
-  typeDefs,
-});
+const apolloServer = new ApolloServer<Context>({ typeDefs, resolvers });
 
-const handler = startServerAndCreateNextHandler(server);
+const handler = startServerAndCreateNextHandler(apolloServer, {
+  context: async (req, res) => ({ req, res, prisma }),
+});
 
 export { handler as GET, handler as POST };
