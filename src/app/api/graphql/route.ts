@@ -37,6 +37,10 @@ const typeDefs = gql`
     author(id: ID!): Author
     authors: [Author]
   }
+
+  type Mutation {
+    newAuthor(name: String, numberOfNovels: Int): Author
+  }
 `;
 
 // DEFINITION: Resolvers are CRUD functions.
@@ -48,6 +52,8 @@ const resolvers = {
   //    novel: [Novel]
   //  }
   // args will can be used to access the id: ID above.
+  //
+  //IMPORTANT: GET requests matching typeDefs above
   Query: {
     // NOTE: Query matching 'authors' in typeDefs above. This gets ALL novels.
     authors: async (parent: any, args: any, context: Context) => {
@@ -62,6 +68,8 @@ const resolvers = {
     },
     // NOTE: Query matching 'author'. This gers ONE novel.
     author: async (parent: any, args: any, context: Context) => {
+      // IMPORTANT: We are taking in the id from the args param because
+      // it is the original Query.
       try {
         const author = await context.prisma.author.findUnique({
           where: {
@@ -76,7 +84,7 @@ const resolvers = {
     },
   },
 
-  // We query author again to get the novels contained within it.
+  //IMPORTANT: We query author again to get the novels contained within it.
   Author: {
     novels: async (parent: any, args: any, context: Context) => {
       try {
@@ -92,7 +100,26 @@ const resolvers = {
         return novels || [];
       } catch (error) {
         console.error("Error fetching novels", error);
+        // This will throw a JSON error in addition to
+        // a console error above.
         throw new Error("Unable to fetch novels.");
+      }
+    },
+  },
+
+  Mutation: {
+    newAuthor: async (parent: any, args: any, context: Context) => {
+      try {
+        const newAuthor = await context.prisma.author.create({
+          data: {
+            name: args.name,
+            numberOfNovels: args.numberOfNovels,
+          },
+        });
+        return newAuthor;
+      } catch (error) {
+        console.error("Error creating new author", error);
+        throw new Error("Unable to create author");
       }
     },
   },
