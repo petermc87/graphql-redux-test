@@ -42,6 +42,7 @@ const typeDefs = gql`
     newAuthor(name: String, numberOfNovels: Int): Author
     updateAuthor(id: ID!, name: String): Author
     deleteAuthor(id: ID!): Author
+    addNovel(authorId: ID!, title: String, image: String, introduction: String, publisher: String)
   }
 `;
 
@@ -108,7 +109,7 @@ const resolvers = {
       }
     },
   },
-
+  // NOTE: Mutations are CUD part of CRUD operations!
   Mutation: {
     newAuthor: async (parent: any, args: any, context: Context) => {
       try {
@@ -153,6 +154,7 @@ const resolvers = {
         throw new Error("Error deleting author");
       }
     },
+    addNovel: async (parent: any, args: any, context: Context) => {},
   },
 };
 
