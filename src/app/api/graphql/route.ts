@@ -41,6 +41,7 @@ const typeDefs = gql`
   type Mutation {
     newAuthor(name: String, numberOfNovels: Int): Author
     updateAuthor(id: ID!, name: String): Author
+    deleteAuthor(id: ID!): Author
   }
 `;
 
@@ -139,22 +140,19 @@ const resolvers = {
         throw new Error("Unable to update Auhtor");
       }
     },
-    // updateAuthor: async (parent: any, args: any, context: Context) => {
-    //   try {
-    //     const updatedUser = await context.prisma.author.update({
-    //       where: {
-    //         id: args.id,
-    //       },
-    //       data: {
-    //         name: args.name,
-    //       },
-    //     });
-    //     return updatedUser;
-    //   } catch (error) {
-    //     console.error("There was an issue updating the user", error);
-    //     throw new Error("Error updating user.");
-    //   }
-    // },
+    deleteAuthor: async (parent: any, args: any, context: Context) => {
+      try {
+        const deletedAuthor = await context.prisma.author.delete({
+          where: {
+            id: args.id,
+          },
+        });
+        return deletedAuthor;
+      } catch (error) {
+        console.error("Unable to delete author", error);
+        throw new Error("Error deleting author");
+      }
+    },
   },
 };
 
