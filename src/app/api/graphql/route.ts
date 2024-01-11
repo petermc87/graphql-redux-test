@@ -40,6 +40,7 @@ const typeDefs = gql`
 
   type Mutation {
     newAuthor(name: String, numberOfNovels: Int): Author
+    updateAuthor(id: ID!, name: String): Author
   }
 `;
 
@@ -122,6 +123,38 @@ const resolvers = {
         throw new Error("Unable to create author");
       }
     },
+    updateAuthor: async (parent: any, args: any, context: Context) => {
+      try {
+        const updatedAuthor = await context.prisma.author.update({
+          where: {
+            id: args.id,
+          },
+          data: {
+            name: args.name,
+          },
+        });
+        return updatedAuthor;
+      } catch (error) {
+        console.error("The author could not be updated");
+        throw new Error("Unable to update Auhtor");
+      }
+    },
+    // updateAuthor: async (parent: any, args: any, context: Context) => {
+    //   try {
+    //     const updatedUser = await context.prisma.author.update({
+    //       where: {
+    //         id: args.id,
+    //       },
+    //       data: {
+    //         name: args.name,
+    //       },
+    //     });
+    //     return updatedUser;
+    //   } catch (error) {
+    //     console.error("There was an issue updating the user", error);
+    //     throw new Error("Error updating user.");
+    //   }
+    // },
   },
 };
 
