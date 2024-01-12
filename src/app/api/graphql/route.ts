@@ -39,10 +39,19 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    # Author Mutations
     newAuthor(name: String, numberOfNovels: Int): Author
     updateAuthor(id: ID!, name: String): Author
     deleteAuthor(id: ID!): Author
-    addNovel(authorId: ID!, title: String, image: String, introduction: String, publisher: String)
+    # Novel Mutations
+    addNovel(
+      authorId: ID!
+      title: String
+      image: String
+      introduction: String
+      publisher: String
+    ): Novel
+    deleteNovel(id: ID!): Novel
   }
 `;
 
@@ -154,7 +163,36 @@ const resolvers = {
         throw new Error("Error deleting author");
       }
     },
-    addNovel: async (parent: any, args: any, context: Context) => {},
+    addNovel: async (parent: any, args: any, context: Context) => {
+      try {
+        const newNovel = await context.prisma.novel.create({
+          data: {
+            authorId: args.authorId,
+            title: args.title,
+            image: args.image,
+            introduction: args.introduction,
+            publisher: args.publisher,
+          },
+        });
+        return newNovel;
+      } catch (error) {
+        console.error("The new novel could not be created", error);
+        throw new Error("Error creating new novel");
+      }
+    },
+    deleteNovel: async (parent: any, args: any, context: Context) => {
+      try {
+        const deletedNovel = await context.prisma.novel.delete({
+          where: {
+            id: args.id,
+          },
+        });
+        return deletedNovel;
+      } catch (error) {
+        console.error("Unable to delete novel", error);
+        throw new Error("Error when deleting novel");
+      }
+    },
   },
 };
 
