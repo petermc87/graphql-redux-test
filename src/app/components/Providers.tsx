@@ -1,3 +1,5 @@
+"use client";
+
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 // NOTE: Make sure to pass children as props. This is the context that
@@ -17,7 +19,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     possible in the tree. In the case of a Next app, wrap it 
     around the layout component. */}
       <ApolloProvider client={client}>
-        <div>{children}</div>;
+        <div>{children}</div>
       </ApolloProvider>
     </>
   );
