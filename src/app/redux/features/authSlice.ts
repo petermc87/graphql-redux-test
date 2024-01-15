@@ -1,5 +1,5 @@
 // A slice will be a current state of a variable (for example), that can
-// be passed to other componets without props drilling.
+// be passed to other components without props drilling.
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 // Create a type for 'value' object in the initialState instance below.
