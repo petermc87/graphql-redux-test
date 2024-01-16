@@ -1,30 +1,22 @@
 "use client";
 
 import { useQuery } from "@apollo/client";
+import { Novel } from "@prisma/client";
 import { GET_AUTHORS } from "../../../graphql/queries";
-
-type Author = {
-  id: String;
-  name: String;
-  novels: [];
-  numberOfNovels: 0;
-};
-
-type Novel = {
-  authorId: String;
-  id: String;
-  image: String;
-  introduction: String;
-  title: String;
-};
+import { AuthorTypes } from "../../../typings";
 
 export default function Authors() {
   // useQuery is a react hook that works in conjuction with GraphQl.
-  const { data } = useQuery(GET_AUTHORS);
+  const { data, loading, error } = useQuery(GET_AUTHORS);
+
+  // Checking if there is data being retrieved. In either case, a message
+  // will be displayed to the screen.
+  if (loading) return <p>Loading ...</p>;
+  else if (error) return <p>Oops! Something went wrong</p>;
   return (
     <>
       {data &&
-        data.authors.map((author: Author) => {
+        data.authors.map((author: AuthorTypes) => {
           return (
             <>
               <h1>{author.name}</h1>
