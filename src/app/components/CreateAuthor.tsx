@@ -1,20 +1,27 @@
 "use client";
 
+import { useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
+import { NEW_AUTHOR } from "../../../graphql/mutations";
 
 export default function Authors() {
   // State for holding the author name and
   // NOTE: we don'd need a state for numberOfNovels input. We set it to 0
   // as default. In the future: SET THE DEFAULT TO 0!!!
-  const [name, setName] = useState("");
+  const [nameState, setNameState] = useState("");
+  const [newAuthor] = useMutation(NEW_AUTHOR, {
+    variables: { name, numberOfNovels },
+  });
 
   // Handle resetting of author state.
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Condition that will show text if nothing is entered.
-    if (name === "") return alert("Please enter a name");
-    setName("");
+    // Condition that will show text if nothing is entered on submit.
+    if (nameState === "") return alert("Please enter a name");
+
+    newAuthor({ variables: {nameState, 0} })
+    setNameState("");
     // TODO: Handle the case for submitting the the backend.
   };
   return (
@@ -23,7 +30,12 @@ export default function Authors() {
       <Container>
         <Form onSubmit={handleSubmit}>
           <Form.Group>
-            <Form.Control type="input" placeholder="Enter" />
+            <Form.Control
+              type="text"
+              placeholder="Enter name"
+              value={nameState}
+              onChange={(e) => setNameState(e.target.value)}
+            />
           </Form.Group>
           <Button type="submit">Submit</Button>
         </Form>
@@ -31,22 +43,3 @@ export default function Authors() {
     </>
   );
 }
-
-// --> ADD THIS TO AN AUTHOR DISPLAY COMPONENT <-- //
-// {data &&
-//   data.authors.map((author: AuthorTypes) => {
-//     return (
-//       <>
-//         <h1>{author.name}</h1>
-//         <div>{author.numberOfNovels}</div>
-//         {author.novels.map((novel: Novel) => {
-//           return (
-//             <>
-//               <div>Novel Title: {novel.title}</div>
-//               <p>Introduction: {novel.introduction}</p>
-//             </>
-//           );
-//         })}
-//       </>
-//     );
-//   })}
