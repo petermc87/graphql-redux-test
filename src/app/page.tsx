@@ -1,11 +1,13 @@
 "use client";
 
-import Authors from "./components/Authors";
+import CreateAuthor from "./components/CreateAuthor";
+import DisplayAuthors from "./components/DisplayAuthors";
 
 export default function Home() {
   return (
     <>
-      <Authors />
+      <CreateAuthor />
+      <DisplayAuthors />
     </>
   );
 }

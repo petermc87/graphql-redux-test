@@ -15,6 +15,7 @@
     "@prisma/client": "^5.7.1",
     "@reduxjs/toolkit": "^2.0.1",
     "add": "^2.0.6",
+    "bootstrap": "^5.3.2",
     "graphql": "^16.8.1",
     "next": "14.0.4",
     "ra-data-graphql": "^4.16.5",
