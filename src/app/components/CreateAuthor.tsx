@@ -1,22 +1,13 @@
 "use client";
 
-import { useQuery } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { GET_AUTHORS } from "../../../graphql/queries";
 
 export default function Authors() {
   // State for holding the author name and
   // NOTE: we don'd need a state for numberOfNovels input. We set it to 0
   // as default. In the future: SET THE DEFAULT TO 0!!!
   const [name, setName] = useState("");
-  // useQuery is a react hook that works in conjuction with GraphQl.
-  const { data, loading, error } = useQuery(GET_AUTHORS);
-
-  // Checking if there is data being retrieved. In either case, a message
-  // will be displayed to the screen.
-  if (loading) return <p>Loading ...</p>;
-  else if (error) return <p>Oops! Something went wrong</p>;
 
   // Handle resetting of author state.
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
