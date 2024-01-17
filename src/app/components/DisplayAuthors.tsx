@@ -19,6 +19,8 @@ export default function DisplayAuthors() {
     <>
       <Container>
         <h2>Previous Authors</h2>
+
+        {/* // Use Redux to store the current author being rendered. */}
         {data &&
           data.authors.map((author: AuthorTypes) => {
             return (

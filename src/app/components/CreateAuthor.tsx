@@ -10,9 +10,9 @@ export default function Authors() {
   // NOTE: we don'd need a state for numberOfNovels input. We set it to 0
   // as default. In the future: SET THE DEFAULT TO 0!!!
   const [nameState, setNameState] = useState("");
-  const [newAuthor] = useMutation(NEW_AUTHOR, {
-    variables: { name, numberOfNovels },
-  });
+
+  // GraphQL
+  const [newAuthor, { data, loading, error }] = useMutation(NEW_AUTHOR);
 
   // Handle resetting of author state.
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -20,9 +20,13 @@ export default function Authors() {
     // Condition that will show text if nothing is entered on submit.
     if (nameState === "") return alert("Please enter a name");
 
-    newAuthor({ variables: {nameState, 0} })
+    // Error handling
+    if (loading) return <p>Submitting...</p>;
+    if (error) return <p>Submission Error! {error.message}</p>;
+
+    newAuthor({ variables: { name: nameState, numberOfNovels: 0 } });
     setNameState("");
-    // TODO: Handle the case for submitting the the backend.
+    // TODO: Handle the case for submitting to the backend.
   };
   return (
     <>
