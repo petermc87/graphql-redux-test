@@ -4,6 +4,7 @@ import { useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { NEW_AUTHOR } from "../../../graphql/mutations";
+import { GET_AUTHORS } from "../../../graphql/queries";
 
 export default function Authors() {
   // State for holding the author name and
@@ -12,7 +13,10 @@ export default function Authors() {
   const [nameState, setNameState] = useState("");
 
   // GraphQL
-  const [newAuthor, { data, loading, error }] = useMutation(NEW_AUTHOR);
+  const [newAuthor, { data, loading, error }] = useMutation(NEW_AUTHOR, {
+    // IMPORTANT: This is added to refetch all authors once one is created.
+    refetchQueries: [GET_AUTHORS, "GetAuthors"],
+  });
 
   // Handle resetting of author state.
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

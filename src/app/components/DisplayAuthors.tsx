@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import { Container } from "react-bootstrap";
 import { GET_AUTHORS } from "../../../graphql/queries";
 import { AuthorTypes } from "../../../typings";
-import Author from "./Author";
+import DisplayAuthor from "./Author";
 
 export default function DisplayAuthors() {
   // useQuery is a react hook that works in conjuction with GraphQl.
@@ -24,7 +24,7 @@ export default function DisplayAuthors() {
           data.authors.map((author: AuthorTypes) => {
             return (
               <>
-                <Author author={author} />
+                <DisplayAuthor key={author.id} author={author} />
               </>
             );
           })}
