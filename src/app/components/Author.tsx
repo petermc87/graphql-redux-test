@@ -12,6 +12,15 @@ type Props = {
 };
 
 export default function Author({ author }: Props) {
+  // --- STATE VARIABLES --- //
+
+  // Show state for edit entry
+  const [edit, setEdit] = useState(false);
+
+  // State for the name and numberOfNovels, separate.
+  const [authorState, setAuthorState] = useState<AuthorTypes | null>(null);
+
+  // --- MUTATIONS --- //
   const [deleteAuthor, { data, loading, error }] = useMutation(DELETE_AUTHOR, {
     refetchQueries: [GET_AUTHORS, "GetAuthors"],
   });
@@ -21,6 +30,7 @@ export default function Author({ author }: Props) {
     refetchQueries: [GET_AUTHORS, "GetAuthors"],
   });
 
+  // --- HANDLER FUNCTIONS --- //
   const handleDelete = (e: any, AuthorId: string) => {
     e.preventDefault();
 
@@ -32,20 +42,25 @@ export default function Author({ author }: Props) {
 
   const handleUpdate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Author Mutation
+    updateAuthor({
+      variables: {
+        id: author.id,
+        numberOfNovels: authorState?.numberOfNovels,
+        name: authorState?.name,
+      },
+    });
   };
-
-  // Show state for edit entry
-  const [edit, setEdit] = useState(false);
-
-  // State for the name and numberOfNovels, separate.
-  const [authorState, setAuthorState] = useState<AuthorTypes | null>(null);
-
-  if (authorState) console.log(authorState);
 
   return (
     <Container>
       {edit && authorState ? (
-        <Form>
+        <Form
+          onSubmit={(e) => {
+            setEdit(false);
+            handleUpdate(e);
+          }}
+        >
           <Form.Group>
             Name:{" "}
             <Form.Control
@@ -71,12 +86,13 @@ export default function Author({ author }: Props) {
                 if (!isNaN(numOfNovelsInput)) {
                   setAuthorState({
                     ...authorState,
-                    numberOfNovels: parseInt(e.target.value),
+                    numberOfNovels: numOfNovelsInput,
                   });
                 }
               }}
             />
           </Form.Group>
+          <Button type="submit">Submit</Button>
         </Form>
       ) : (
         <>
