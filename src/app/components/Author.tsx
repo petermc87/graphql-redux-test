@@ -1,7 +1,8 @@
 import { useMutation } from "@apollo/client";
 import { Novel } from "@prisma/client";
-import { Button, Container } from "react-bootstrap";
-import { DELETE_AUTHOR } from "../../../graphql/mutations";
+import { FormEvent, useState } from "react";
+import { Button, Container, Form } from "react-bootstrap";
+import { DELETE_AUTHOR, UPDATE_AUTHOR } from "../../../graphql/mutations";
 import { GET_AUTHORS } from "../../../graphql/queries";
 import { AuthorTypes } from "../../../typings";
 import DisplayNovel from "./Novel";
@@ -15,6 +16,11 @@ export default function Author({ author }: Props) {
     refetchQueries: [GET_AUTHORS, "GetAuthors"],
   });
 
+  // Call the useMutation hook to pass in UPDATE_AUTHOR parser
+  const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
+    refetchQueries: [GET_AUTHORS, "GetAuthors"],
+  });
+
   const handleDelete = (e: any, AuthorId: string) => {
     e.preventDefault();
 
@@ -24,10 +30,30 @@ export default function Author({ author }: Props) {
     deleteAuthor({ variables: { id: AuthorId } });
   };
 
+  const handleUpdate = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
+  // Show state for edit entry
+  const [edit, setEdit] = useState(false);
+
   return (
     <Container>
-      <h3>{author.name}</h3>
-      <div>{author.numberOfNovels}</div>
+      {edit ? (
+        <Form>
+          <Form.Group>
+            Name: <Form.Control placeholder="edit name" />
+            Number of Novels:{" "}
+            <Form.Control placeholder="edit number of novels" />
+          </Form.Group>
+        </Form>
+      ) : (
+        <>
+          <h3>{author.name}</h3>
+          <div>{author.numberOfNovels}</div>
+        </>
+      )}
+
       {author.novels.map((novel: Novel) => {
         return <DisplayNovel key={novel.id} novel={novel} />;
       })}
@@ -37,6 +63,17 @@ export default function Author({ author }: Props) {
         }}
       >
         Delete
+      </Button>
+      <Button
+        onClick={() => {
+          if (edit === false) {
+            setEdit(true);
+          } else {
+            setEdit(false);
+          }
+        }}
+      >
+        Edit
       </Button>
     </Container>
   );
