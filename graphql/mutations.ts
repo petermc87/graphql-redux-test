@@ -35,3 +35,21 @@ export const DELETE_AUTHOR = gql`
     }
   }
 `;
+
+export const UPDATE_AUTHOR = gql`
+  mutation Mutation($id: ID!, $name: String, $numberOfNovels: Int) {
+    updateAuthor(id: $id, name: $name, numberOfNovels: $numberOfNovels) {
+      id
+      name
+      numberOfNovels
+      novels {
+        title
+        id
+        image
+        introduction
+        publisher
+        authorId
+      }
+    }
+  }
+`;

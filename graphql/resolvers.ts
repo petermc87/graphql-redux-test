@@ -92,6 +92,7 @@ export const resolvers = {
           },
           data: {
             name: args.name,
+            numberOfNovels: args.numberOfNovels,
           },
         });
         return updatedAuthor;

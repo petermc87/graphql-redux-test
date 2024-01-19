@@ -33,7 +33,7 @@ export const typeDefs = gql`
   type Mutation {
     # Author Mutations
     newAuthor(name: String, numberOfNovels: Int): Author
-    updateAuthor(id: ID!, name: String): Author
+    updateAuthor(id: ID!, name: String, numberOfNovels: Int): Author
     deleteAuthor(id: ID!): Author
     # Novel Mutations
     addNovel(
