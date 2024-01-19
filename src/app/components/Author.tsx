@@ -37,20 +37,51 @@ export default function Author({ author }: Props) {
   // Show state for edit entry
   const [edit, setEdit] = useState(false);
 
+  // State for the name and numberOfNovels, separate.
+  const [authorState, setAuthorState] = useState<AuthorTypes | null>(null);
+
+  if (authorState) console.log(authorState);
+
   return (
     <Container>
-      {edit ? (
+      {edit && authorState ? (
         <Form>
           <Form.Group>
-            Name: <Form.Control placeholder="edit name" />
+            Name:{" "}
+            <Form.Control
+              value={authorState.name}
+              placeholder="edit name"
+              onChange={(e) => {
+                setAuthorState({
+                  ...authorState,
+                  name: e.target.value,
+                });
+              }}
+            />
             Number of Novels:{" "}
-            <Form.Control placeholder="edit number of novels" />
+            <Form.Control
+              value={authorState.numberOfNovels}
+              placeholder="edit number of novels"
+              onChange={(e) => {
+                // IMPORTANT :First, we have to parse the inputvalue to a number, because
+                // it is a string by default.
+                const numOfNovelsInput = parseInt(e.target.value);
+
+                // IMPORTANT: A checker for successful parsing needs to be defined here.
+                if (!isNaN(numOfNovelsInput)) {
+                  setAuthorState({
+                    ...authorState,
+                    numberOfNovels: parseInt(e.target.value),
+                  });
+                }
+              }}
+            />
           </Form.Group>
         </Form>
       ) : (
         <>
-          <h3>{author.name}</h3>
-          <div>{author.numberOfNovels}</div>
+          Name: <h3>{author.name}</h3>
+          Number of Novels: <div>{author.numberOfNovels}</div>
         </>
       )}
 
@@ -66,10 +97,13 @@ export default function Author({ author }: Props) {
       </Button>
       <Button
         onClick={() => {
+          // Button will either open or close the edit fields.
           if (edit === false) {
             setEdit(true);
+            setAuthorState(author);
           } else {
             setEdit(false);
+            setAuthorState(null);
           }
         }}
       >
