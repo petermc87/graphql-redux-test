@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Novel } from "@prisma/client";
+import type { Novel } from "@prisma/client";
 import { FormEvent, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { DELETE_AUTHOR, UPDATE_AUTHOR } from "../../../graphql/mutations";
