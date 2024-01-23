@@ -15,20 +15,11 @@ export default function DisplayAuthors() {
   if (loading) return <p>Loading ...</p>;
   if (error) return <p>Oops! Something went wrong</p>;
 
-  return (
-    <>
-      <Container>
-        <h2>Previous Authors</h2>
-        {/* // Use Redux to store the current author being rendered? */}
-        {data &&
-          data.authors.map((author: AuthorTypes) => {
-            return (
-              <>
-                <DisplayAuthor key={author.id} author={author} />
-              </>
-            );
-          })}
-      </Container>
-    </>
-  );
+  // Create the list of items to be returned.
+  const authorList = data.authors.map((author: AuthorTypes) => {
+    return <DisplayAuthor key={author.id} author={author} />;
+  });
+
+  // Pass the list into a Boostrap container.
+  return <Container>{authorList}</Container>;
 }
